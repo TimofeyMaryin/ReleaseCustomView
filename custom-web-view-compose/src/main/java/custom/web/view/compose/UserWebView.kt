@@ -14,11 +14,53 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import custom.lib.droid.decrypt_helper.EncryptionHelper
 
 @Composable
 fun UserWebView(
     data: String
 ) {
+    val context = LocalContext.current
+    val webView = remember {
+        WebView(context).apply {
+
+            settings.apply {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                loadWithOverviewMode = true
+                useWideViewPort = true
+                allowFileAccess = true
+                allowContentAccess = true
+                javaScriptCanOpenWindowsAutomatically = true
+                userAgentString = userAgents.random()
+            }
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            webViewClient = MyWebViewClient()
+            loadUrl(data)
+        }
+    }
+    CookieManager.getInstance().setAcceptCookie(true)
+    CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
+
+    AndroidView(
+        factory = { webView },
+        update = {
+            it.loadUrl(data)
+        },
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
+
+@Composable
+fun UserDataShowContent(
+    value: String,
+) {
+    val data = EncryptionHelper.decrypt(value, EncryptionHelper.secretKey)
+
     val context = LocalContext.current
     val webView = remember {
         WebView(context).apply {

@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import custom.lib.droid.decrypt_helper.EncryptionHelper
 import custom.test.releasecustomview.ui.theme.ReleaseCustomViewTheme
+import custom.web.view.compose.UserDataShowContent
 import custom.web.view.compose.UserWebView
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +25,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    UserWebView(data = "https://github.com")
+                    // val secreteKey = EncryptionHelper.generateRandomString(32)
+                    val encryptUrl = EncryptionHelper.encrypt("https://youtube.com", EncryptionHelper.secretKey)
+                    UserDataShowContent(value = encryptUrl)
                 }
             }
         }
